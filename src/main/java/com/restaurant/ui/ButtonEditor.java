@@ -1,4 +1,4 @@
-package main.java.com.restaurant.ui;
+package com.restaurant.ui;
 
 import javax.swing.*;
 import java.awt.*;

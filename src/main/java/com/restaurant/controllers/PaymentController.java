@@ -1,4 +1,4 @@
-package main.java.com.restaurant.controllers;
+package com.restaurant.controllers;
 
 public class PaymentController {
     

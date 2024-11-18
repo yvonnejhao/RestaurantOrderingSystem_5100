@@ -1,11 +1,11 @@
-package main.java.com.restaurant;
+package com.restaurant;
 
 import javax.swing.SwingUtilities;
 
-import main.java.com.restaurant.models.MenuItem;
-import main.java.com.restaurant.models.Order;
-import main.java.com.restaurant.models.Restaurant;
-import main.java.com.restaurant.ui.LoginView;
+import com.restaurant.models.MenuItem;
+import com.restaurant.models.Order;
+import com.restaurant.models.Restaurant;
+import com.restaurant.ui.LoginView;
 
 public class Main {
     public static void main(String[] args) {

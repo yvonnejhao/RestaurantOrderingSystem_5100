@@ -1,8 +1,8 @@
-package main.java.com.restaurant.ui;
+package com.restaurant.ui;
 
 
-import main.java.com.restaurant.models.Order;
-import main.java.com.restaurant.models.Restaurant;
+import com.restaurant.models.Order;
+import com.restaurant.models.Restaurant;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

@@ -1,6 +1,8 @@
 package main.java.com.restaurant.ui;
 
-import main.java.com.restaurant.models.Restaurant;
+import com.restaurant.models.Restaurant;
+import com.restaurant.ui.AdminView;
+import com.restaurant.ui.MenuManagementView;
 
 import javax.swing.*;
 import java.awt.*;

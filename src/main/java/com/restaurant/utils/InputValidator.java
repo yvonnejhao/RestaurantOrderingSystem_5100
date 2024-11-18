@@ -1,4 +1,4 @@
-package main.java.com.restaurant.utils;
+package com.restaurant.utils;
 
 public class InputValidator {
     

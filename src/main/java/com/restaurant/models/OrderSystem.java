@@ -1,4 +1,4 @@
-package main.java.com.restaurant.models;
+package com.restaurant.models;
 
 
 import java.util.Scanner;

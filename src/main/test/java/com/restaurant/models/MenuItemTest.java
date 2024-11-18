@@ -1,4 +1,4 @@
-package main.test.java.com.restaurant.models;
+package com.restaurant.models;
 
 public class MenuItemTest {
     

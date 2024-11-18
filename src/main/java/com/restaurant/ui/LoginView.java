@@ -1,6 +1,6 @@
-package main.java.com.restaurant.ui;
+package com.restaurant.ui;
 
-import main.java.com.restaurant.models.Restaurant;
+import com.restaurant.models.Restaurant;
 
 import javax.swing.*;
 import java.awt.*;

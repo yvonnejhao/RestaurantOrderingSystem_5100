@@ -1,4 +1,4 @@
-package main.java.com.restaurant.services;
+package com.restaurant.services;
 
 public class MenuService {
     

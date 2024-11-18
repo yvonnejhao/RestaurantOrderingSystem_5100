@@ -1,4 +1,4 @@
-package main.java.com.restaurant.ui;
+package com.restaurant.ui;
 
 public class DisplayMenu {
     
