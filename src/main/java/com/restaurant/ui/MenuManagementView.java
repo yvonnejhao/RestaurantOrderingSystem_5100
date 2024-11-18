@@ -5,8 +5,9 @@ import com.restaurant.models.Restaurant;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class MenuManagementView extends JPanel {
     private Restaurant restaurant;
@@ -22,41 +23,15 @@ public class MenuManagementView extends JPanel {
         JTable menuTable = new JTable(tableModel);
         menuTable.setRowHeight(30);
 
-        // Add "Modify" and "Delete" functionality
-        menuTable.getColumn("Modify").setCellEditor(new ButtonEditor(new JCheckBox(), "Modify", e -> {
-            int row = menuTable.getSelectedRow();
-            String itemName = (String) tableModel.getValueAt(row, 0);
-            MenuItem item = restaurant.getMenu().stream()
-                    .filter(menuItem -> menuItem.getName().equals(itemName))
-                    .findFirst().orElse(null);
-            if (item != null) {
-                String newName = JOptionPane.showInputDialog(this, "Enter new name:", item.getName());
-                String newPriceStr = JOptionPane.showInputDialog(this, "Enter new price:", item.getPrice());
-                try {
-                    double newPrice = Double.parseDouble(newPriceStr);
-                    item.setName(newName);
-                    item.setPrice(newPrice);
-                    refreshTable();
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Invalid price. Please enter a number.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }));
-
-        menuTable.getColumn("Delete").setCellEditor(new ButtonEditor(new JCheckBox(), "Delete", e -> {
-            int row = menuTable.getSelectedRow();
-            String itemName = (String) tableModel.getValueAt(row, 0);
-            MenuItem item = restaurant.getMenu().stream()
-                    .filter(menuItem -> menuItem.getName().equals(itemName))
-                    .findFirst().orElse(null);
-            if (item != null) {
-                restaurant.removeMenuItem(item);
-                refreshTable();
-            }
-        }));
-
         // Load menu items into the table
         loadMenuItems();
+
+        // Set cell renderers and editors for Modify and Delete buttons
+        menuTable.getColumn("Modify").setCellRenderer(new ButtonRenderer());
+        menuTable.getColumn("Modify").setCellEditor(new ButtonEditor(new JCheckBox(), "Modify", () -> handleModify(menuTable)));
+
+        menuTable.getColumn("Delete").setCellRenderer(new ButtonRenderer());
+        menuTable.getColumn("Delete").setCellEditor(new ButtonEditor(new JCheckBox(), "Delete", () -> handleDelete(menuTable)));
 
         // Add table to scroll pane
         JScrollPane scrollPane = new JScrollPane(menuTable);
@@ -72,9 +47,9 @@ public class MenuManagementView extends JPanel {
     }
 
     private void loadMenuItems() {
-        tableModel.setRowCount(0); // Clear table before loading
-        for (MenuItem item : restaurant.getMenu()) {
-            tableModel.addRow(new Object[]{item.getName(), "$ " + item.getPrice(), "Modify", "Delete"});
+        List<MenuItem> menu = restaurant.getMenu();
+        for (MenuItem item : menu) {
+            tableModel.addRow(new Object[]{item.getName(), String.format("$ %.2f", item.getPrice()), "Modify", "Delete"});
         }
     }
 
@@ -102,8 +77,66 @@ public class MenuManagementView extends JPanel {
         }
     }
 
-    private void refreshTable() {
-        tableModel.setRowCount(0);
-        loadMenuItems();
+    private void handleModify(JTable table) {
+        int row = table.getSelectedRow();
+        String currentName = (String) tableModel.getValueAt(row, 0);
+        String currentPrice = (String) tableModel.getValueAt(row, 1);
+
+        String newName = JOptionPane.showInputDialog(this, "Enter new name:", currentName);
+        String newPriceStr = JOptionPane.showInputDialog(this, "Enter new price:", currentPrice.replace("$ ", ""));
+
+        try {
+            double newPrice = Double.parseDouble(newPriceStr);
+            restaurant.getMenu().get(row).setName(newName);
+            restaurant.getMenu().get(row).setPrice(newPrice);
+
+            tableModel.setValueAt(newName, row, 0);
+            tableModel.setValueAt(String.format("$ %.2f", newPrice), row, 1);
+
+            JOptionPane.showMessageDialog(this, "Item modified successfully!");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid price. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void handleDelete(JTable table) {
+        int row = table.getSelectedRow();
+        restaurant.getMenu().remove(row);
+        tableModel.removeRow(row);
+        JOptionPane.showMessageDialog(this, "Item deleted successfully!");
+    }
+
+    // Renderer for buttons
+    private static class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+    }
+
+    // Editor for buttons
+    private static class ButtonEditor extends DefaultCellEditor {
+        private JButton button;
+
+        public ButtonEditor(JCheckBox checkBox, String label, Runnable action) {
+            super(checkBox);
+            button = new JButton(label);
+            button.setOpaque(true);
+            button.addActionListener(e -> {
+                action.run();
+                fireEditingStopped();
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            button.setText((value == null) ? "" : value.toString());
+            return button;
+        }
     }
 }
