@@ -1,5 +1,7 @@
 package com.restaurant.models;
 
+import com.restaurant.models.Restaurant;
+
 import java.util.ArrayList;
 import java.util.List;
 
