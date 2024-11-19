@@ -1,5 +1,8 @@
 package com.restaurant.ui;
 
+import com.restaurant.models.MenuItem;
+import com.restaurant.models.Restaurant;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -11,28 +14,27 @@ public class MenuView extends JFrame {
     private Map<String, Integer> cartItems;
     private DefaultTableModel cartTableModel;
     private JLabel totalLabel;
-    private String tableNumber; // 新增變數儲存桌號
+    private String tableNumber; // Store table number
+    private Restaurant restaurant; // Reference to Restaurant
 
-    public MenuView(String tableNumber) { // 接受桌號作為參數
+    public MenuView(String tableNumber, Restaurant restaurant) { // Accept Restaurant instance
         this.tableNumber = tableNumber;
+        this.restaurant = restaurant;
 
-        setTitle("Menu - Table " + tableNumber); // 顯示桌號
-        setSize(600, 400);
+        setTitle("Menu - Table " + tableNumber); // Show table number
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // 初始化菜單和購物車
+        // Initialize menu and cart
         menuItems = new HashMap<>();
-        menuItems.put("Hamburger", 6.30);
-        menuItems.put("Pizza", 5.50);
-        menuItems.put("Sandwich", 5.80);
-
+        loadMenuItems(); // Load menu from Restaurant
         cartItems = new HashMap<>();
 
-        // 左側菜單區域
+        // Menu panel on the left
         JPanel menuPanel = new JPanel();
-        menuPanel.setLayout(new GridLayout(menuItems.size(), 1, 10, 10));
+        menuPanel.setLayout(new GridLayout(0, 1, 10, 10));
         menuPanel.setBackground(new Color(173, 216, 230));
         for (Map.Entry<String, Double> entry : menuItems.entrySet()) {
             String itemName = entry.getKey();
@@ -40,7 +42,7 @@ public class MenuView extends JFrame {
             menuPanel.add(createMenuItemPanel(itemName, itemPrice));
         }
 
-        // 右側購物車區域
+        // Cart panel on the right
         JPanel cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBackground(new Color(173, 216, 230));
 
@@ -65,6 +67,16 @@ public class MenuView extends JFrame {
 
         add(menuPanel, BorderLayout.WEST);
         add(cartPanel, BorderLayout.CENTER);
+
+        // Register as a listener to Restaurant
+        restaurant.addMenuChangeListener(this::refreshMenu);
+    }
+
+    private void loadMenuItems() {
+        menuItems.clear();
+        for (MenuItem item : restaurant.getMenu()) {
+            menuItems.put(item.getName(), item.getPrice());
+        }
     }
 
     private JPanel createMenuItemPanel(String itemName, double itemPrice) {
@@ -150,5 +162,14 @@ public class MenuView extends JFrame {
         cartItems.clear();
         updateCartTable();
         updateTotal();
+    }
+
+    private void refreshMenu() {
+        SwingUtilities.invokeLater(() -> {
+            loadMenuItems();
+            getContentPane().removeAll();
+            repaint();
+            revalidate();
+        });
     }
 }

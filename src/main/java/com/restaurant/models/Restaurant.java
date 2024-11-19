@@ -14,9 +14,13 @@ public class Restaurant {
     private static final String MENU_CSV = "menu.csv";
     private static final String ORDERS_CSV = "orders.csv";
 
+    // Observer mechanism to notify changes
+    private List<Runnable> menuChangeListeners;
+
     public Restaurant() {
         this.menu = new ArrayList<>();
         this.orders = new ArrayList<>();
+        this.menuChangeListeners = new ArrayList<>();
         loadMenuFromCSV();
         loadOrdersFromCSV();
     }
@@ -60,6 +64,7 @@ public class Restaurant {
                       .append(String.valueOf(item.getPrice()))
                       .append("\n");
             }
+            notifyMenuChangeListeners(); // 通知觀察者菜單已更新
             return true; // Save successful
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,15 +88,6 @@ public class Restaurant {
         }
     }
 
-    // Getter
-    public List<MenuItem> getMenu() {
-        return menu;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
     // 添加菜單和訂單的方法
     public void addMenuItem(MenuItem item) {
         menu.add(item);
@@ -103,6 +99,18 @@ public class Restaurant {
         saveOrdersToCSV(); // 每次更新後保存到 CSV
     }
 
+    public void updateMenuItem(int index, String newName, double newPrice) {
+        MenuItem item = menu.get(index);
+        item.setName(newName);
+        item.setPrice(newPrice);
+        saveMenuToCSV(); // 更新後保存並通知觀察者
+    }
+
+    public void removeMenuItem(int index) {
+        menu.remove(index);
+        saveMenuToCSV(); // 刪除後保存並通知觀察者
+    }
+
     public void updateOrderStatus(String orderNo, String newStatus) {
         for (Order order : orders) {
             if (order.getOrderNo().equals(orderNo)) {
@@ -111,5 +119,25 @@ public class Restaurant {
                 break;
             }
         }
+    }
+
+    // Observer-related methods
+    public void addMenuChangeListener(Runnable listener) {
+        menuChangeListeners.add(listener);
+    }
+
+    private void notifyMenuChangeListeners() {
+        for (Runnable listener : menuChangeListeners) {
+            listener.run();
+        }
+    }
+
+    // Getters
+    public List<MenuItem> getMenu() {
+        return menu;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
     }
 }

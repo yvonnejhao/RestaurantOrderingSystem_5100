@@ -97,7 +97,7 @@ public class LoginView extends JFrame {
                     return;
                 }
                 System.out.println("Customer login successful. Table: " + tableNumber);
-                new MenuView(tableNumber).setVisible(true);
+                new MenuView(tableNumber, restaurant).setVisible(true);
                 dispose();
             } else {
                 String adminId = adminIdField.getText();
