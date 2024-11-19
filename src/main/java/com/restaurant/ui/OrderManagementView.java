@@ -51,6 +51,16 @@ public class OrderManagementView extends JPanel {
         JButton saveButton = new JButton("Save Changes");
         saveButton.addActionListener(e -> saveChanges());
         buttonPanel.add(saveButton);
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            if (topFrame != null) {
+                topFrame.dispose();
+            }
+        });
+        buttonPanel.add(closeButton);
+
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -69,6 +79,7 @@ public class OrderManagementView extends JPanel {
             // Update the order status in the restaurant model
             restaurant.updateOrderStatus(orderNo, newStatus);
         }
+        restaurant.saveOrdersToCSV(); // 保存到 CSV 文件
         JOptionPane.showMessageDialog(this, "Order statuses updated successfully!");
     }
 
@@ -83,6 +94,13 @@ public class OrderManagementView extends JPanel {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             comboBox.setSelectedItem(value);
+            if (isSelected) {
+                comboBox.setBackground(table.getSelectionBackground());
+                comboBox.setForeground(table.getSelectionForeground());
+            } else {
+                comboBox.setBackground(table.getBackground());
+                comboBox.setForeground(table.getForeground());
+            }
             return comboBox;
         }
     }

@@ -43,6 +43,10 @@ public class MenuManagementView extends JPanel {
         addButton.addActionListener(e -> addNewItem());
         buttonPanel.add(addButton);
 
+        JButton saveButton = new JButton("Save to CSV");
+        saveButton.addActionListener(e -> saveToCSV());
+        buttonPanel.add(saveButton);
+
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -104,6 +108,14 @@ public class MenuManagementView extends JPanel {
         restaurant.getMenu().remove(row);
         tableModel.removeRow(row);
         JOptionPane.showMessageDialog(this, "Item deleted successfully!");
+    }
+
+    private void saveToCSV() {
+        if (restaurant.saveMenuToCSV()) {
+            JOptionPane.showMessageDialog(this, "Menu saved to CSV successfully!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to save menu to CSV.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // Renderer for buttons
