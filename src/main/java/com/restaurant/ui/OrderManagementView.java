@@ -46,7 +46,7 @@ public class OrderManagementView extends JPanel {
         JScrollPane scrollPane = new JScrollPane(orderTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Buttons for saving changes and closing the view
+        // Buttons for saving changes, closing, and going back to the login page
         JPanel buttonPanel = new JPanel();
         JButton saveButton = new JButton("Save Changes");
         saveButton.addActionListener(e -> saveChanges());
@@ -60,6 +60,16 @@ public class OrderManagementView extends JPanel {
             }
         });
         buttonPanel.add(closeButton);
+
+        JButton backToLoginButton = new JButton("Back to Login");
+        backToLoginButton.addActionListener(e -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            if (topFrame != null) {
+                topFrame.dispose(); // Close the current window
+            }
+            new LoginView(restaurant).setVisible(true); // Open the login page
+        });
+        buttonPanel.add(backToLoginButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -79,7 +89,7 @@ public class OrderManagementView extends JPanel {
             // Update the order status in the restaurant model
             restaurant.updateOrderStatus(orderNo, newStatus);
         }
-        restaurant.saveOrdersToCSV(); // 保存到 CSV 文件
+        restaurant.saveOrdersToCSV(); // Save to CSV file
         JOptionPane.showMessageDialog(this, "Order statuses updated successfully!");
     }
 

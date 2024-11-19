@@ -1,6 +1,7 @@
 package com.restaurant.ui;
 
 import com.restaurant.models.MenuItem;
+import com.restaurant.models.Order;
 import com.restaurant.models.Restaurant;
 
 import javax.swing.*;
@@ -14,14 +15,14 @@ public class MenuView extends JFrame {
     private Map<String, Integer> cartItems;
     private DefaultTableModel cartTableModel;
     private JLabel totalLabel;
-    private String tableNumber; // Store table number
-    private Restaurant restaurant; // Reference to Restaurant
+    private String tableNumber;
+    private Restaurant restaurant;
 
-    public MenuView(String tableNumber, Restaurant restaurant) { // Accept Restaurant instance
+    public MenuView(String tableNumber, Restaurant restaurant) {
         this.tableNumber = tableNumber;
         this.restaurant = restaurant;
 
-        setTitle("Menu - Table " + tableNumber); // Show table number
+        setTitle("Menu - Table " + tableNumber);
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -29,7 +30,7 @@ public class MenuView extends JFrame {
 
         // Initialize menu and cart
         menuItems = new HashMap<>();
-        loadMenuItems(); // Load menu from Restaurant
+        loadMenuItems();
         cartItems = new HashMap<>();
 
         // Menu panel on the left
@@ -65,10 +66,21 @@ public class MenuView extends JFrame {
         cartPanel.add(scrollPane, BorderLayout.CENTER);
         cartPanel.add(totalPanel, BorderLayout.SOUTH);
 
+        // "Back to Login" button
+        JButton backToLoginButton = new JButton("Back to Login");
+        backToLoginButton.addActionListener(e -> {
+            this.dispose(); // Close the current frame
+            new LoginView(restaurant).setVisible(true); // Open the login page
+        });
+
+        JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        backPanel.add(backToLoginButton);
+
+        add(backPanel, BorderLayout.NORTH);
         add(menuPanel, BorderLayout.WEST);
         add(cartPanel, BorderLayout.CENTER);
 
-        // Register as a listener to Restaurant
+        // Register as a listener to the restaurant
         restaurant.addMenuChangeListener(this::refreshMenu);
     }
 
@@ -88,7 +100,7 @@ public class MenuView extends JFrame {
 
         JLabel priceLabel = new JLabel(String.format("$ %.2f", itemPrice));
 
-        JLabel amountLabel = new JLabel("amount - ");
+        JLabel amountLabel = new JLabel("Amount - ");
         JTextField amountField = new JTextField("0", 2);
         amountField.setEditable(false);
 
@@ -106,7 +118,7 @@ public class MenuView extends JFrame {
             }
         });
 
-        JButton addToCartButton = new JButton("Add to cart");
+        JButton addToCartButton = new JButton("Add to Cart");
         addToCartButton.setBackground(new Color(30, 144, 255));
         addToCartButton.setForeground(Color.WHITE);
         addToCartButton.addActionListener(e -> {
@@ -158,7 +170,28 @@ public class MenuView extends JFrame {
     }
 
     private void placeOrder() {
-        JOptionPane.showMessageDialog(this, "Order placed! Total: " + totalLabel.getText() + " Table: " + tableNumber);
+        if (cartItems.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Your cart is empty. Please add items before placing an order.");
+            return;
+        }
+
+        // Generate order number
+        String orderNo = String.format("%03d", restaurant.getOrders().size() + 1);
+
+        // Create a new order and add items
+        Order newOrder = new Order(orderNo, tableNumber, "Confirmed");
+        for (Map.Entry<String, Integer> entry : cartItems.entrySet()) {
+            String itemName = entry.getKey();
+            int quantity = entry.getValue();
+            for (int i = 0; i < quantity; i++) {
+                newOrder.addItem(new MenuItem(itemName, menuItems.get(itemName)));
+            }
+        }
+
+        // Add order to the restaurant
+        restaurant.addOrder(newOrder);
+
+        JOptionPane.showMessageDialog(this, "Order placed successfully! Order No: " + orderNo);
         cartItems.clear();
         updateCartTable();
         updateTotal();
@@ -168,8 +201,8 @@ public class MenuView extends JFrame {
         SwingUtilities.invokeLater(() -> {
             loadMenuItems();
             getContentPane().removeAll();
-            repaint();
             revalidate();
+            repaint();
         });
     }
 }

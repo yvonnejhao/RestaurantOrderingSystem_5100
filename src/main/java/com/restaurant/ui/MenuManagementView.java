@@ -37,7 +37,7 @@ public class MenuManagementView extends JPanel {
         JScrollPane scrollPane = new JScrollPane(menuTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Button panel for adding new items
+        // Button panel for adding new items and navigation
         JPanel buttonPanel = new JPanel();
         JButton addButton = new JButton("Add new menu item");
         addButton.addActionListener(e -> addNewItem());
@@ -46,6 +46,16 @@ public class MenuManagementView extends JPanel {
         JButton saveButton = new JButton("Save to CSV");
         saveButton.addActionListener(e -> saveToCSV());
         buttonPanel.add(saveButton);
+
+        JButton backToLoginButton = new JButton("Back to Login");
+        backToLoginButton.addActionListener(e -> {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            if (topFrame != null) {
+                topFrame.dispose(); // Close current window
+            }
+            new LoginView(restaurant).setVisible(true); // Open LoginView
+        });
+        buttonPanel.add(backToLoginButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
     }
