@@ -1,6 +1,5 @@
 package com.restaurant.models;
 
-
 import java.util.Scanner;
 
 public class OrderSystem {
@@ -20,8 +19,6 @@ public class OrderSystem {
             System.out.println("Order cancelled.");
         }
         confirmationScanner.close();
-    }
-
-    
+    } 
 }
 
