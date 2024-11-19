@@ -29,7 +29,7 @@ public class LoginView extends JFrame {
         mainPanel.setBackground(new Color(173, 216, 230));
 
         JLabel welcomeLabel = new JLabel("Welcome to Restaurant!", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16)); // Set font size and style for the label
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // 顧客區域
@@ -70,8 +70,10 @@ public class LoginView extends JFrame {
 
         // Login 按鈕
         loginButton = new JButton("Login");
-        loginButton.setBackground(new Color(30, 144, 255));
+        loginButton.setBackground(new Color(0, 123, 255)); // Darker blue
         loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 16)); // Set font size and style
+        loginButton.setMargin(new Insets(10, 20, 10, 20)); // Add padding
         loginButton.addActionListener(new LoginAction());
 
         mainPanel.add(Box.createVerticalStrut(20));
