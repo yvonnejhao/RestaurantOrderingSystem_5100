@@ -25,13 +25,13 @@ public class Restaurant {
         loadOrdersFromCSV();
     }
 
-    // 加載菜單項目
+    // Load menu items
     private void loadMenuFromCSV() {
         List<String[]> data = CSVUtils.readCSV(MENU_CSV);
-        boolean isFirstLine = true; // 用來標記是否為第一行
+        boolean isFirstLine = true; // Used to mark if it is the first line
         for (String[] row : data) {
             if (isFirstLine) {
-                isFirstLine = false; // 跳過第一行
+                isFirstLine = false; // Skip the first line
                 continue;
             }
             if (row.length == 2) {
@@ -44,7 +44,7 @@ public class Restaurant {
         }
     }
 
-    // 加載訂單項目（無需跳過第一行）
+    // Load order items (no need to skip the first line)
     private void loadOrdersFromCSV() {
         List<String[]> data = CSVUtils.readCSV(ORDERS_CSV);
         for (String[] row : data) {
@@ -54,7 +54,7 @@ public class Restaurant {
         }
     }
 
-    // 保存菜單項目
+    // Save menu items
     public boolean saveMenuToCSV() {
         try (FileWriter writer = new FileWriter(MENU_CSV)) {
             writer.append("Item,Price\n");
@@ -64,7 +64,7 @@ public class Restaurant {
                       .append(String.valueOf(item.getPrice()))
                       .append("\n");
             }
-            notifyMenuChangeListeners(); // 通知觀察者菜單已更新
+            notifyMenuChangeListeners(); // Notify observers that the menu has been updated
             return true; // Save successful
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,7 +72,7 @@ public class Restaurant {
         }
     }
 
-    // 保存訂單項目
+    // Save order items
     public void saveOrdersToCSV() {
         try (FileWriter writer = new FileWriter(ORDERS_CSV)) {
             for (Order order : getOrders()) {
@@ -88,34 +88,34 @@ public class Restaurant {
         }
     }
 
-    // 添加菜單和訂單的方法
+    // Methods to add menu and order items
     public void addMenuItem(MenuItem item) {
         menu.add(item);
-        saveMenuToCSV(); // 每次更新後保存到 CSV
+        saveMenuToCSV(); // Save to CSV after each update
     }
 
     public void addOrder(Order order) {
         orders.add(order);
-        saveOrdersToCSV(); // 每次更新後保存到 CSV
+        saveOrdersToCSV(); // Save to CSV after each update
     }
 
     public void updateMenuItem(int index, String newName, double newPrice) {
         MenuItem item = menu.get(index);
         item.setName(newName);
         item.setPrice(newPrice);
-        saveMenuToCSV(); // 更新後保存並通知觀察者
+        saveMenuToCSV(); // Save and notify observers after update
     }
 
     public void removeMenuItem(int index) {
         menu.remove(index);
-        saveMenuToCSV(); // 刪除後保存並通知觀察者
+        saveMenuToCSV(); // Save and notify observers after deletion
     }
 
     public void updateOrderStatus(String orderNo, String newStatus) {
         for (Order order : orders) {
             if (order.getOrderNo().equals(orderNo)) {
                 order.setStatus(newStatus);
-                saveOrdersToCSV(); // 保存變更
+                saveOrdersToCSV(); // Save changes
                 break;
             }
         }
