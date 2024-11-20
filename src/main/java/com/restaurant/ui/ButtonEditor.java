@@ -10,7 +10,6 @@ public class ButtonEditor extends DefaultCellEditor {
     private JButton button;
     private String label;
 
-
     public ButtonEditor(JCheckBox checkBox, String label, ActionListener actionListener) {
         super(checkBox);
         this.label = label;
