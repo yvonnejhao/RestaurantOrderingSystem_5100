@@ -1,0 +1,28 @@
+# Ignore Mac system files
+.DS_Store
+
+# Ignore build directories
+/target/
+/out/
+
+# Ignore IDE-specific files
+/.vscode/
+/.idea/
+/*.iml
+
+# Ignore Maven specific files
+.mvn/
+!**/src/main/**/mvn/**
+
+# Ignore compiled class files
+*.class
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore CSV files
+*.csv
