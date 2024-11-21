@@ -46,10 +46,7 @@ public class LoginView extends JFrame {
         mainPanel.add(customerPanel, gbc);
 
         JButton customerButton = new JButton("Customer");
-        customerButton.setBackground(new Color(30, 144, 255));
-        customerButton.setForeground(Color.WHITE);
-        customerButton.setFont(new Font("Arial", Font.BOLD, 16));
-        customerButton.setMargin(new Insets(10, 20, 10, 20)); // Add padding
+        customizeButton(customerButton);
         customerButton.addActionListener(e -> {
             isCustomerSelected = true;
             tableNumberField.setEditable(true);
@@ -81,10 +78,7 @@ public class LoginView extends JFrame {
         mainPanel.add(adminPanel, gbc);
 
         JButton adminButton = new JButton("Admin");
-        adminButton.setBackground(new Color(30, 144, 255));
-        adminButton.setForeground(Color.WHITE);
-        adminButton.setFont(new Font("Arial", Font.BOLD, 16));
-        adminButton.setMargin(new Insets(10, 20, 10, 20)); // Add padding
+        customizeButton(adminButton);
         adminButton.addActionListener(e -> {
             isCustomerSelected = false;
             adminIdField.setEditable(true);
@@ -110,10 +104,7 @@ public class LoginView extends JFrame {
 
         // Login button
         loginButton = new JButton("Login");
-        loginButton.setBackground(new Color(30, 144, 255));
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFont(new Font("Arial", Font.BOLD, 16)); // Set font size and style
-        loginButton.setMargin(new Insets(10, 20, 10, 20)); // Add padding
+        customizeButton(loginButton);
         loginButton.addActionListener(new LoginAction());
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -121,6 +112,13 @@ public class LoginView extends JFrame {
         mainPanel.add(loginButton, gbc);
 
         add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private void customizeButton(JButton button) {
+        button.setBackground(new Color(30, 144, 255));
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setMargin(new Insets(10, 20, 10, 20)); // Add padding
     }
 
     private class LoginAction implements ActionListener {
@@ -152,6 +150,13 @@ public class LoginView extends JFrame {
     }
 
     public static void main(String[] args) {
+        // Set the cross-platform look and feel
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
         SwingUtilities.invokeLater(() -> {
             Restaurant restaurant = new Restaurant(); // Initialize restaurant
             new LoginView(restaurant).setVisible(true);
