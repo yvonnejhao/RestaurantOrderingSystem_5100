@@ -3,6 +3,8 @@ package com.restaurant.ui;
 import com.restaurant.models.Restaurant;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +21,7 @@ public class LoginView extends JFrame {
         this.restaurant = restaurant;
 
         setTitle("Welcome to Restaurant!");
-        setSize(600, 500); // Increased window size
+        setSize(800, 600); // Increased window size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -30,8 +32,9 @@ public class LoginView extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // Welcome label
         JLabel welcomeLabel = new JLabel("Welcome to Restaurant!", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24)); // Larger font size
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 28)); // Larger font size
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -39,67 +42,51 @@ public class LoginView extends JFrame {
 
         // Customer area
         JPanel customerPanel = new JPanel(new GridBagLayout());
-        customerPanel.setBorder(BorderFactory.createTitledBorder("Customer"));
+        TitledBorder customerBorder = BorderFactory.createTitledBorder("Customer");
+        customerBorder.setTitleFont(new Font("Arial", Font.PLAIN, 18)); // Set the desired font and size
+        customerPanel.setBorder(BorderFactory.createCompoundBorder(customerBorder, new EmptyBorder(10, 10, 10, 10))); // Set the border size
+        customerPanel.setPreferredSize(new Dimension(400, 150)); // Set a fixed preferred size
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         mainPanel.add(customerPanel, gbc);
 
-        JButton customerButton = new JButton("Customer");
-        customizeButton(customerButton);
-        customerButton.addActionListener(e -> {
-            isCustomerSelected = true;
-            tableNumberField.setEditable(true);
-            adminIdField.setEditable(false);
-            adminIdField.setText("");
-        });
+        JLabel tableNumberLabel = new JLabel("Please enter your table number:");
+        tableNumberLabel.setFont(new Font("Arial", Font.PLAIN, 18)); // Larger font size
         gbc.gridx = 0;
         gbc.gridy = 0;
-        customerPanel.add(customerButton, gbc);
-
-        JLabel tableNumberLabel = new JLabel("Please enter your table number:");
-        tableNumberLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        gbc.gridx = 0;
-        gbc.gridy = 1;
         customerPanel.add(tableNumberLabel, gbc);
 
         tableNumberField = new JTextField(10);
-        tableNumberField.setEditable(false);
-        tableNumberField.setFont(new Font("Arial", Font.PLAIN, 16));
+        tableNumberField.setFont(new Font("Arial", Font.PLAIN, 18)); // Larger font size
+        tableNumberField.setEditable(true); // Ensure the JTextField is always editable
+        tableNumberField.setToolTipText("Format: A06 (A letter followed by two digits)");
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         customerPanel.add(tableNumberField, gbc);
 
         // Admin area
         JPanel adminPanel = new JPanel(new GridBagLayout());
-        adminPanel.setBorder(BorderFactory.createTitledBorder("Admin"));
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        TitledBorder adminBorder = BorderFactory.createTitledBorder("Admin");
+        adminBorder.setTitleFont(new Font("Arial", Font.PLAIN, 18)); // Set the desired font and size
+        adminPanel.setBorder(BorderFactory.createCompoundBorder(adminBorder, new EmptyBorder(10, 10, 10, 10))); // Set the border size
+        adminPanel.setPreferredSize(new Dimension(400, 150)); // Set a fixed preferred size
+        gbc.gridx = 0; // Ensure the same column as customerPanel
+        gbc.gridy = 2; // Place it below the customerPanel
+        gbc.gridwidth = 1;
         mainPanel.add(adminPanel, gbc);
 
-        JButton adminButton = new JButton("Admin");
-        customizeButton(adminButton);
-        adminButton.addActionListener(e -> {
-            isCustomerSelected = false;
-            adminIdField.setEditable(true);
-            tableNumberField.setEditable(false);
-            tableNumberField.setText("");
-        });
+        JLabel adminIdLabel = new JLabel("Please enter your admin ID:");
+        adminIdLabel.setFont(new Font("Arial", Font.PLAIN, 18)); // Larger font size
         gbc.gridx = 0;
         gbc.gridy = 0;
-        adminPanel.add(adminButton, gbc);
-
-        JLabel adminIdLabel = new JLabel("Please enter your ID number:");
-        adminIdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        gbc.gridx = 0;
-        gbc.gridy = 1;
         adminPanel.add(adminIdLabel, gbc);
 
         adminIdField = new JTextField(10);
-        adminIdField.setEditable(false);
-        adminIdField.setFont(new Font("Arial", Font.PLAIN, 16));
+        adminIdField.setFont(new Font("Arial", Font.PLAIN, 18)); // Larger font size
+        adminIdField.setEditable(true); // Ensure the JTextField is always editable
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         adminPanel.add(adminIdField, gbc);
 
         // Login button
@@ -107,7 +94,7 @@ public class LoginView extends JFrame {
         customizeButton(loginButton);
         loginButton.addActionListener(new LoginAction());
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3; // Place it below the adminPanel
         gbc.gridwidth = 2;
         mainPanel.add(loginButton, gbc);
 
@@ -117,7 +104,7 @@ public class LoginView extends JFrame {
     private void customizeButton(JButton button) {
         button.setBackground(new Color(30, 144, 255));
         button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setFont(new Font("Arial", Font.BOLD, 20)); // Larger font size
         button.setMargin(new Insets(10, 20, 10, 20)); // Add padding
     }
 
