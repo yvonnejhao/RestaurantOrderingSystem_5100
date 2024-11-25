@@ -98,6 +98,10 @@ public class LoginView extends JFrame {
         gbc.gridwidth = 2;
         mainPanel.add(loginButton, gbc);
 
+        // Add ActionListener to text fields to handle Enter key press
+        tableNumberField.addActionListener(new LoginAction());
+        adminIdField.addActionListener(new LoginAction());
+
         add(mainPanel, BorderLayout.CENTER);
     }
 
@@ -114,6 +118,12 @@ public class LoginView extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == tableNumberField) {
+                isCustomerSelected = true;
+            } else if (e.getSource() == adminIdField) {
+                isCustomerSelected = false;
+            }
+
             if (isCustomerSelected) {
                 String tableNumber = tableNumberField.getText();
                 if (!tablePattern.matcher(tableNumber).matches()) {
