@@ -85,6 +85,7 @@ public class LoginView extends JFrame {
         adminIdField = new JTextField(10);
         adminIdField.setFont(new Font("Arial", Font.PLAIN, 18)); // Larger font size
         adminIdField.setEditable(true); // Ensure the JTextField is always editable
+        adminIdField.setToolTipText("Format: 123456 (Six digits)");
         gbc.gridx = 0;
         gbc.gridy = 1;
         adminPanel.add(adminIdField, gbc);
