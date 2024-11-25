@@ -26,7 +26,7 @@ public class MenuView extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
 
         // Initialize menu and cart
         menuItems = new HashMap<>();
@@ -34,13 +34,20 @@ public class MenuView extends JFrame {
         cartItems = new HashMap<>();
 
         // Menu panel on the left
-        JPanel menuPanel = new JPanel();
-        menuPanel.setLayout(new GridLayout(0, 1, 10, 10));
+        JPanel menuPanel = new JPanel(new GridBagLayout());
         menuPanel.setBackground(new Color(173, 216, 230));
+        GridBagConstraints menuGbc = new GridBagConstraints();
+        menuGbc.insets = new Insets(5, 5, 5, 5);
+        menuGbc.gridx = 0;
+        menuGbc.gridy = GridBagConstraints.RELATIVE;
+        menuGbc.anchor = GridBagConstraints.WEST;
+        menuGbc.fill = GridBagConstraints.HORIZONTAL;
+        menuGbc.weightx = 1.0;
+
         for (Map.Entry<String, Double> entry : menuItems.entrySet()) {
             String itemName = entry.getKey();
             double itemPrice = entry.getValue();
-            menuPanel.add(createMenuItemPanel(itemName, itemPrice));
+            menuPanel.add(createMenuItemPanel(itemName, itemPrice), menuGbc);
         }
 
         // Cart panel on the right
@@ -76,9 +83,31 @@ public class MenuView extends JFrame {
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         backPanel.add(backToLoginButton);
 
-        add(backPanel, BorderLayout.NORTH);
-        add(menuPanel, BorderLayout.WEST);
-        add(cartPanel, BorderLayout.CENTER);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        // Add back panel
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        add(backPanel, gbc);
+
+        // Add menu panel
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.6; // 60% of the width
+        gbc.weighty = 1.0;
+        add(menuPanel, gbc);
+
+        // Add cart panel
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 0.4; // 40% of the width
+        add(cartPanel, gbc);
 
         // Register as a listener to the restaurant
         restaurant.addMenuChangeListener(this::refreshMenu);
@@ -92,25 +121,45 @@ public class MenuView extends JFrame {
     }
 
     private JPanel createMenuItemPanel(String itemName, double itemPrice) {
-        JPanel panel = new JPanel(new FlowLayout());
+        JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(new Color(173, 216, 230));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 5); // Add some padding with a consistent gap from the left side
+
+        Font font = new Font("Arial", Font.PLAIN, 18); // Define a common font
+
+        // Item name
         JLabel nameLabel = new JLabel(itemName);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setFont(font);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST; // Align to the left
+        gbc.gridwidth = 1; // Span one column
+        panel.add(nameLabel, gbc);
 
-        JLabel priceLabel = new JLabel(String.format("$ %.2f", itemPrice));
-
+        // Amount row
         JLabel amountLabel = new JLabel("Amount - ");
-        JTextField amountField = new JTextField("0", 2);
-        amountField.setEditable(false);
+        amountLabel.setFont(font);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER; // Align to the center
+        panel.add(amountLabel, gbc);
 
-        JButton addButton = new JButton("+");
-        addButton.addActionListener(e -> {
-            int amount = Integer.parseInt(amountField.getText());
-            amountField.setText(String.valueOf(amount + 1));
-        });
+        JTextField amountField = new JTextField("0", 2);
+        amountField.setFont(font);
+        amountField.setEditable(false);
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER; // Align to the center
+        panel.add(amountField, gbc);
 
         JButton subtractButton = new JButton("-");
+        subtractButton.setFont(font);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER; // Align to the center
+        panel.add(subtractButton, gbc);
         subtractButton.addActionListener(e -> {
             int amount = Integer.parseInt(amountField.getText());
             if (amount > 0) {
@@ -118,9 +167,35 @@ public class MenuView extends JFrame {
             }
         });
 
+        JButton addButton = new JButton("+");
+        addButton.setFont(font);
+        gbc.gridx = 4;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER; // Align to the center
+        panel.add(addButton, gbc);
+        addButton.addActionListener(e -> {
+            int amount = Integer.parseInt(amountField.getText());
+            amountField.setText(String.valueOf(amount + 1));
+        });
+
+        // Price label
+        JLabel priceLabel = new JLabel(String.format("$ %.2f", itemPrice));
+        priceLabel.setFont(font);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST; // Align to the left
+        panel.add(priceLabel, gbc);
+
+        // Add to Cart button
         JButton addToCartButton = new JButton("Add to Cart");
+        addToCartButton.setFont(font);
         addToCartButton.setBackground(new Color(30, 144, 255));
         addToCartButton.setForeground(Color.WHITE);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 4; // Span four columns
+        gbc.anchor = GridBagConstraints.CENTER; // Align to the center
+        panel.add(addToCartButton, gbc);
         addToCartButton.addActionListener(e -> {
             int amount = Integer.parseInt(amountField.getText());
             if (amount > 0) {
@@ -128,14 +203,6 @@ public class MenuView extends JFrame {
                 amountField.setText("0");
             }
         });
-
-        panel.add(nameLabel);
-        panel.add(priceLabel);
-        panel.add(amountLabel);
-        panel.add(subtractButton);
-        panel.add(amountField);
-        panel.add(addButton);
-        panel.add(addToCartButton);
 
         return panel;
     }

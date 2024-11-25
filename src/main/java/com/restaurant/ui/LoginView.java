@@ -114,35 +114,24 @@ public class LoginView extends JFrame {
     }
 
     private class LoginAction implements ActionListener {
-        private final Pattern tablePattern = Pattern.compile("^[A-Z]\\d{2}$");
+        private final Pattern tablePattern = Pattern.compile("^[A-Za-z]\\d{2}$");
         private final Pattern adminIdPattern = Pattern.compile("^\\d{6}$");
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == tableNumberField) {
-                isCustomerSelected = true;
-            } else if (e.getSource() == adminIdField) {
-                isCustomerSelected = false;
-            }
+            String tableNumber = tableNumberField.getText();
+            String adminId = adminIdField.getText();
 
-            if (isCustomerSelected) {
-                String tableNumber = tableNumberField.getText();
-                if (!tablePattern.matcher(tableNumber).matches()) {
-                    JOptionPane.showMessageDialog(LoginView.this, "Invalid table number. Format should be a letter followed by two digits (e.g., A06).", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            if (tablePattern.matcher(tableNumber).matches()) {
                 System.out.println("Customer login successful. Table: " + tableNumber);
                 new MenuView(tableNumber, restaurant).setVisible(true);
                 dispose();
-            } else {
-                String adminId = adminIdField.getText();
-                if (!adminIdPattern.matcher(adminId).matches()) {
-                    JOptionPane.showMessageDialog(LoginView.this, "Invalid Admin ID. Format should be six digits (e.g., 123456).", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+            } else if (adminIdPattern.matcher(adminId).matches()) {
                 System.out.println("Admin login successful. ID: " + adminId);
                 new AdminView(restaurant).setVisible(true);
                 dispose();
+            } else {
+                JOptionPane.showMessageDialog(LoginView.this, "Invalid input. Please enter a valid table number (e.g., A06) or admin ID (e.g., 123456).", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
