@@ -59,7 +59,8 @@ public class MenuView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(cartTable);
 
         JPanel totalPanel = new JPanel(new BorderLayout());
-        totalLabel = new JLabel("Total: $0.00", SwingConstants.RIGHT);
+        totalLabel = new JLabel();
+        updateTotal(); // Set the initial values
         totalPanel.add(totalLabel, BorderLayout.CENTER);
 
         JButton placeOrderButton = new JButton("Place Order");
@@ -244,7 +245,18 @@ public class MenuView extends JFrame {
             total += menuItems.get(itemName) * quantity;
         }
         double tax = total * 0.10;
-        totalLabel.setText(String.format("Total: $%.2f   Tax (10%%): $%.2f   Grand Total: $%.2f", total, tax, total + tax));
+        double grandTotal = total + tax;
+
+        totalLabel.setText(String.format(
+            "<html>"
+            + "<table>"
+            + "<tr><td>Total:</td><td style='padding-left: 20px;'>$%.2f</td></tr>"
+            + "<tr><td>Tax (10%%):</td><td style='padding-left: 20px;'>$%.2f</td></tr>"
+            + "<tr><td>Grand Total:</td><td style='padding-left: 20px;'>$%.2f</td></tr>"
+            + "</table>"
+            + "</html>", 
+            total, tax, grandTotal
+        ));
     }
 
     private void placeOrder() {

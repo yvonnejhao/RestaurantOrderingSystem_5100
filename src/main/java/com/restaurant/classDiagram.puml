@@ -1,0 +1,135 @@
+@startuml RestaurantOrderingSystem
+
+class MenuItem {
+    - name: String
+    - price: double
+    + MenuItem(name: String, price: double)
+    + getName(): String
+    + setName(name: String): void
+    + getPrice(): double
+    + setPrice(price: double): void
+}
+
+class Order {
+    - orderNo: String
+    - tableNo: String
+    - status: String
+    - items: List<MenuItem>
+    + Order(orderNo: String, tableNo: String, status: String)
+    + addItem(item: MenuItem): void
+    + calculateTotal(): double
+    + generateSummary(): String
+    + getOrderNo(): String
+    + setOrderNo(orderNo: String): void
+    + getTableNo(): String
+    + setTableNo(tableNo: String): void
+    + getStatus(): String
+    + setStatus(status: String): void
+    + getItems(): List<MenuItem>
+    + setItems(items: List<MenuItem>): void
+}
+
+class Restaurant {
+    - menu: List<MenuItem>
+    - orders: List<Order>
+    - menuChangeListeners: List<Runnable>
+    + Restaurant()
+    - loadMenuFromCSV(): void
+    - loadOrdersFromCSV(): void
+    + saveMenuToCSV(): boolean
+    + saveOrdersToCSV(): void
+    + addMenuItem(item: MenuItem): void
+    + addOrder(order: Order): void
+    + updateMenuItem(index: int, newName: String, newPrice: double): void
+    + removeMenuItem(index: int): void
+    + updateOrderStatus(orderNo: String, newStatus: String): void
+    + addMenuChangeListener(listener: Runnable): void
+    - notifyMenuChangeListeners(): void
+    + getMenu(): List<MenuItem>
+    + getOrders(): List<Order>
+}
+
+class OrderSystemGUI {
+    - restaurant: Restaurant
+    - menuArea: JTextArea
+    - orderArea: JTextArea
+    - total: double
+    + OrderSystemGUI()
+    - initializeMenu(): void
+    - updateMenuDisplay(): void
+    - addItemToOrder(): void
+    - checkout(): void
+    + main(args: String[]): void
+}
+
+class LoginView {
+    - tableNumberField: JTextField
+    - adminIdField: JTextField
+    - loginButton: JButton
+    - isCustomerSelected: boolean
+    - restaurant: Restaurant
+    + LoginView(restaurant: Restaurant)
+    + main(args: String[]): void
+}
+
+class MenuView {
+    - menuItems: Map<String, Double>
+    - cartItems: Map<String, Integer>
+    - cartTableModel: DefaultTableModel
+    - totalLabel: JLabel
+    - tableNumber: String
+    - restaurant: Restaurant
+    + MenuView(tableNumber: String, restaurant: Restaurant)
+    - loadMenuItems(): void
+    - createMenuItemPanel(itemName: String, itemPrice: double): JPanel
+    - addToCart(itemName: String, quantity: int, price: double): void
+    - updateCartTable(): void
+    - updateTotal(): void
+    - placeOrder(): void
+    - refreshMenu(): void
+}
+
+class AdminView {
+    - restaurant: Restaurant
+    - contentPanel: JPanel
+    - cardLayout: CardLayout
+    + AdminView(restaurant: Restaurant)
+}
+
+class MenuManagementView {
+    - restaurant: Restaurant
+    - tableModel: DefaultTableModel
+    + MenuManagementView(restaurant: Restaurant)
+    - loadMenuItems(): void
+    - addNewItem(): void
+    - handleModify(table: JTable): void
+    - handleDelete(table: JTable): void
+    - saveToCSV(): void
+}
+
+class OrderManagementView {
+    - restaurant: Restaurant
+    - tableModel: DefaultTableModel
+    - orderTable: JTable
+    + OrderManagementView(restaurant: Restaurant)
+    - loadOrders(): void
+    - saveChanges(): void
+}
+
+class CSVUtils {
+    + readCSV(filePath: String): List<String[]>
+    + writeCSV(filePath: String, data: List<String[]>): void
+}
+
+OrderSystemGUI --> Restaurant
+Order --> MenuItem
+Restaurant --> MenuItem
+Restaurant --> Order
+LoginView --> Restaurant
+MenuView --> Restaurant
+AdminView --> Restaurant
+MenuManagementView --> Restaurant
+OrderManagementView --> Restaurant
+CSVUtils --> Restaurant
+
+@enduml
