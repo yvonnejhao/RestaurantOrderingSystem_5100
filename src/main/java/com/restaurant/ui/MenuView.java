@@ -73,6 +73,9 @@ public class MenuView extends JFrame {
         cartPanel.add(scrollPane, BorderLayout.CENTER);
         cartPanel.add(totalPanel, BorderLayout.SOUTH);
 
+        // Set a fixed width for the cart panel
+        cartPanel.setPreferredSize(new Dimension(300, cartPanel.getPreferredSize().height)); // Set the width to 300 pixels
+
         // "Back to Login" button
         JButton backToLoginButton = new JButton("Back to Login");
         backToLoginButton.addActionListener(e -> {
@@ -106,7 +109,7 @@ public class MenuView extends JFrame {
         // Add cart panel
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.weightx = 0.4; // 40% of the width
+        gbc.weightx = 0.0; // No resizing
         add(cartPanel, gbc);
 
         // Register as a listener to the restaurant
